@@ -1,6 +1,8 @@
 ﻿using E_Commerce.Application.DTOs;
+using E_Commerce.Application.DTOs.Auth;
 using E_Commerce.Application.DTOs.Response;
 using E_Commerce.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,9 +26,50 @@ namespace E_Commerce.API.Controllers
             return Ok(response);
         }
         [HttpPost("login")]
-        public async Task<ActionResult<DataResponse<UserDto>>> loginAsync(LoginDto dto)
+        public async Task<ActionResult<DataResponse<AuthDtoResponse>>> loginAsync(LoginDto dto)
         {
-            return await _authServices.LoginAsync(dto);
+            var response = await _authServices.LoginAsync(dto);
+            if(!response.IsSuccess) return Unauthorized(response);
+            var cookiesOptions = new CookieOptions()
+            {
+                HttpOnly = true,
+                Expires = response.Data.RefreshTokenExpierAt,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            };
+            Response.Cookies.Append("refreshToken", response.Data.RefreshToken, cookiesOptions);
+            return Ok(response);
+        }
+        [HttpPost("refreshtoken")]
+        public async Task<ActionResult<TokenReponse>> RefreshTokenAsync()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return Unauthorized(new DataResponse<TokenReponse>
+                    (false, "No Refresh Token Provided", null, 
+                    new List<string>() { "No Refresh Token Provided" }));
+            }
+            var response = await _authServices.RefreshTokenAsync(refreshToken);
+            if(!response.IsSuccess) return Unauthorized(response);
+            var cookiesOptions = new CookieOptions()
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7),
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            };
+            Response.Cookies.Append("refreshToken", response.Data.RefreshToken, cookiesOptions);
+            return Ok(response);
+        }
+        [HttpPost("logout")]
+        public async Task<ActionResult<BaseResponse>> LogOutAsync()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var response = await _authServices.LogOutAsync(refreshToken);
+            if(!response.IsSuccess) return BadRequest(response);
+            Response.Cookies.Delete("refreshToken");
+            return Ok(response);
         }
     }
 }

@@ -12,14 +12,18 @@ namespace E_Commerce.Infrastructure.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public IUserRepository UserRepository { get ; set; }
+        public IUserRepository UserRepository { get ; }
+
+        public IRefreshTokenRepository RefreshTokenRepository { get; }
+
         private readonly ECommerceDbContext _dbContext;
         private readonly Hashtable _repo = new Hashtable();
 
-        public UnitOfWork(ECommerceDbContext dbContext, IUserRepository userRepo)
+        public UnitOfWork(ECommerceDbContext dbContext, IUserRepository userRepo,IRefreshTokenRepository refreshTokenRepository)
         {
             _dbContext = dbContext;
             UserRepository = userRepo;
+            RefreshTokenRepository = refreshTokenRepository;
         }
         public async ValueTask DisposeAsync()
         => await _dbContext.DisposeAsync();

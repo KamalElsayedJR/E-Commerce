@@ -5,7 +5,9 @@ using E_Commerce.Application.Mapping;
 using E_Commerce.Domain.Interfaces;
 using E_Commerce.Infrastructure.Data;
 using E_Commerce.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace E_Commerce.API
 {
@@ -23,14 +25,38 @@ namespace E_Commerce.API
             builder.Services.AddSwaggerGen();
             #region Extiention
             //builder.Services.
-            builder.Services.AddScoped<IAuthServices, AuthServices>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IAuthServices, AuthServices>();
+            builder.Services.AddScoped<ITokenServices, TokenServices>();
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            builder.Services.AddScoped<ICategoryServices, CategoryServices>();
+
             builder.Services.AddDbContext<ECommerceDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddAutoMapper(typeof(MappingProfile));
+            //authentication
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecureKey"])),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
             #endregion
 
             var app = builder.Build();
@@ -43,7 +69,7 @@ namespace E_Commerce.API
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

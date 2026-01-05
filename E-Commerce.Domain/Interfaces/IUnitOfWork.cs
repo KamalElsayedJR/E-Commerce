@@ -10,7 +10,8 @@ namespace E_Commerce.Domain.Interfaces
     public interface IUnitOfWork : IAsyncDisposable
     {
         IGenericRepository<T> Repository<T>() where T : BaseModel;
-        public IUserRepository UserRepository { get; set; }
+        public IUserRepository UserRepository { get;}
+        public IRefreshTokenRepository RefreshTokenRepository { get;}
         Task<int> SaveChangesAsync();
     }
 }

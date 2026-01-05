@@ -19,7 +19,7 @@ namespace E_Commerce.Infrastructure.Repositories
             _dbContext = dbContext;
         }
         public async Task<User?> GetUserByEmailAsync(string Email)
-        => await _dbContext.Users.FirstOrDefaultAsync(u=>u.Email == Email);
+        => await _dbContext.Users.Include(u=>u.RefreshTokens).FirstOrDefaultAsync(u=>u.Email == Email);
 
         public async Task<bool> IsUserAlreadyExistAsync(string Email)
         {

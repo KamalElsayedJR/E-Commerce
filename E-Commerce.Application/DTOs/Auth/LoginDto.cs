@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Application.DTOs
+namespace E_Commerce.Application.DTOs.Auth
 {
     public class LoginDto
     {

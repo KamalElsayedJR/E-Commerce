@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Application.DTOs;
+using E_Commerce.Application.DTOs.Auth;
 using E_Commerce.Application.DTOs.Response;
 using E_Commerce.Domain.Models;
 using System;
@@ -14,6 +15,9 @@ namespace E_Commerce.Application.Interfaces
         string HashPassword(string Password);
         Task<BaseResponse> RegisterAsync(RegisterDto dto);
         bool VerifyPassword(string Password, string HashedPassword);
-        Task<DataResponse<UserDto>> LoginAsync(LoginDto dto);
+        Task<DataResponse<AuthDtoResponse>> LoginAsync(LoginDto dto);
+        Task<DataResponse<TokenReponse>> RefreshTokenAsync(string token);
+        Task<BaseResponse> LogOutAsync(string token);
+
     }
 }

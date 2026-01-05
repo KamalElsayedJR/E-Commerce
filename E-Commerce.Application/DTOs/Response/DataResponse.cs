@@ -8,9 +8,9 @@ namespace E_Commerce.Application.DTOs.Response
 {
     public class DataResponse<T> : BaseResponse
     {
-        public List<T>? Data { get; set; } = new List<T>();
+        public T? Data { get; set; } 
         public List<string>? Errors { get; set; } = new List<string>();
-        public DataResponse(bool isSuccess, string message, List<T>? data, List<string>? errors): base(isSuccess,message)
+        public DataResponse(bool isSuccess, string message, T? data, List<string>? errors): base(isSuccess,message)
         {
             IsSuccess = isSuccess;
             Message = message;

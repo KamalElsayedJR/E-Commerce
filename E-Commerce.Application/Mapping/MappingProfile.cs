@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
-using E_Commerce.Application.DTOs;
+using E_Commerce.Application.DTOs.Auth;
+using E_Commerce.Application.DTOs.Category;
+using E_Commerce.Application.DTOs.User;
 using E_Commerce.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ namespace E_Commerce.Application.Mapping
             // Create your object-object mappings here
             CreateMap<RegisterDto, User>().ForMember(des=>des.HashedPassword ,otc=>otc.MapFrom(src=>src.Password));
             CreateMap<User, UserDto>();
+            CreateMap<Category, CreateOrUpdateCategoryDto>().ReverseMap();
         }
     }
 }
