@@ -12,8 +12,6 @@ namespace E_Commerce.Application.DTOs.User
     {
         public string FullName { get; set; }
         public string Email { get; set; }
-        public List<UserRoles> Roles { get; set; }
-       
-        
+        public List<UserRoles> Roles { get; set; }      
     }
 }

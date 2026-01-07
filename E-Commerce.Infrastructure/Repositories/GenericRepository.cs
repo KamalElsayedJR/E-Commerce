@@ -1,4 +1,5 @@
-﻿using E_Commerce.Domain.Interfaces;
+﻿using E_Commerce.Application.Interfaces.Repositories;
+using E_Commerce.Application.Specifications;
 using E_Commerce.Domain.Models;
 using E_Commerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,16 @@ namespace E_Commerce.Infrastructure.Repositories
         {
             _dbContext = dbContext;
         }
+        #region WithSpecification
+        public async Task<IReadOnlyList<T>> GetAllAsyncWithSpec(ISpecification<T> spec)
+        {
+            return await (SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>(), spec)).ToListAsync();
+        }
+        public async Task<T> GetOneAsyncWithSpec(ISpecification<T> spec)
+        {
+            return await SpecificationEvaluator<T>.GetQuery(_dbContext.Set<T>(), spec).FirstOrDefaultAsync();
+        } 
+        #endregion
         public async Task CreateAsync(T entity)
         => await _dbContext.Set<T>().AddAsync(entity);
         public void Delete(T entity)

@@ -2,8 +2,8 @@
 using E_Commerce.Application.DTOs.Auth;
 using E_Commerce.Application.DTOs.Response;
 using E_Commerce.Application.DTOs.User;
-using E_Commerce.Application.Interfaces;
-using E_Commerce.Domain.Interfaces;
+using E_Commerce.Application.Interfaces.Repositories;
+using E_Commerce.Application.Interfaces.Services;
 using E_Commerce.Domain.Models;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
@@ -76,6 +76,20 @@ namespace E_Commerce.Application.implementation
             }
             return new BaseResponse(true, "Logged Out Successfully");
         }
+        public async Task<DataResponse<UserDto>> Me(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return new DataResponse<UserDto>(false, "User Not Found", null, new List<string>() { "User Not Found" });
+            }
+            var user = await _uoW.Repository<User>().GetByIdAsync(userId);
+            if (user is null)
+            {
+                return new DataResponse<UserDto>(false, "User Not Found", null, new List<string>() { "User Not Found" });
+            }
+            var mappedUser = _mapper.Map<User, UserDto>(user);
+            return new DataResponse<UserDto>(true, "User Found Successfully", mappedUser, null);
+        }
         public async Task<DataResponse<TokenReponse>> RefreshTokenAsync(string token)
         {
             var refreshToken = (await _uoW.RefreshTokenRepository.GetRefreshTokenAsync(token));
@@ -128,7 +142,5 @@ namespace E_Commerce.Application.implementation
         }
         public bool VerifyPassword(string Password, string HashedPassword)
         => BCrypt.Net.BCrypt.Verify(Password, HashedPassword);
-
-
     }
 }

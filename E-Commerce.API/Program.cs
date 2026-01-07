@@ -1,9 +1,10 @@
-
 using E_Commerce.Application.implementation;
-using E_Commerce.Application.Interfaces;
+using E_Commerce.Application.Interfaces.Image;
+using E_Commerce.Application.Interfaces.Repositories;
+using E_Commerce.Application.Interfaces.Services;
 using E_Commerce.Application.Mapping;
-using E_Commerce.Domain.Interfaces;
 using E_Commerce.Infrastructure.Data;
+using E_Commerce.Infrastructure.Hellper;
 using E_Commerce.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -25,13 +26,14 @@ namespace E_Commerce.API
             builder.Services.AddSwaggerGen();
             #region Extiention
             //builder.Services.
-
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IAuthServices, AuthServices>();
             builder.Services.AddScoped<ITokenServices, TokenServices>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<ICategoryServices, CategoryServices>();
+            builder.Services.AddScoped<IImageService, CloudinaryImageService>();
+            builder.Services.AddScoped<ISelllerProductServices, SellerProductServices>();
 
             builder.Services.AddDbContext<ECommerceDbContext>(options =>
             {

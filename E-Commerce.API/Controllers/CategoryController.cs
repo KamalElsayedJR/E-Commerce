@@ -1,5 +1,5 @@
 ﻿using E_Commerce.Application.DTOs.Category;
-using E_Commerce.Application.Interfaces;
+using E_Commerce.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,15 +8,14 @@ namespace E_Commerce.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryServices _categoryServices;
-
         public CategoryController(ICategoryServices categoryServices)
         {
             _categoryServices = categoryServices;
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("CreateCategory")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateOrUpdateCategoryDto dto)
         {
@@ -25,6 +24,7 @@ namespace E_Commerce.API.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateCategory/{categoryId}")]
         public async Task<IActionResult> UpdateCategory([FromBody] CreateOrUpdateCategoryDto dto, [FromRoute] string categoryId)
         {
@@ -33,6 +33,7 @@ namespace E_Commerce.API.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteCategory/{categoryId}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] string categoryId)
         {
@@ -41,6 +42,7 @@ namespace E_Commerce.API.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+        [Authorize]
         [HttpGet("GetAllCategories")]
         public async Task<IActionResult> GetAllCategories()
         {
@@ -49,6 +51,7 @@ namespace E_Commerce.API.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+        [Authorize]
         [HttpGet("GetCategory/{categoryId}")]
         public async Task<IActionResult> GetCategory([FromRoute] string categoryId)
         {

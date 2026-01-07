@@ -23,7 +23,6 @@ namespace E_Commerce.Infrastructure.Data.Configurations
                                                                              .Select(r => Enum.Parse<UserRoles>(r))
                                                                              .ToList()
                                                                              );
-
             var rolesComparer = new ValueComparer<List<UserRoles>>(
                 (c1, c2) => c1.SequenceEqual(c2),
                 c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
@@ -41,8 +40,6 @@ namespace E_Commerce.Infrastructure.Data.Configurations
                     .HasConversion(rolesConverter)
                     .Metadata
                     .SetValueComparer(rolesComparer);
-
-
         }
     }
 }

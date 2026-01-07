@@ -1,4 +1,4 @@
-﻿using E_Commerce.Domain.Interfaces;
+﻿using E_Commerce.Application.Interfaces.Repositories;
 using E_Commerce.Domain.Models;
 using E_Commerce.Infrastructure.Data;
 using System;

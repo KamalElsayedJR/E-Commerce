@@ -1,10 +1,12 @@
 ﻿using E_Commerce.Application.DTOs;
 using E_Commerce.Application.DTOs.Auth;
 using E_Commerce.Application.DTOs.Response;
-using E_Commerce.Application.Interfaces;
+using E_Commerce.Application.DTOs.User;
+using E_Commerce.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace E_Commerce.API.Controllers
 {
@@ -71,5 +73,21 @@ namespace E_Commerce.API.Controllers
             Response.Cookies.Delete("refreshToken");
             return Ok(response);
         }
+        [Authorize]
+        [HttpGet("Profile")]
+        public async Task<ActionResult<DataResponse<UserDto>>> Profile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new DataResponse<UserDto>
+                    (false, "Invalid User", null, 
+                    new List<string>() { "Invalid User" }));
+            }
+            var response = await _authServices.Me(userId);
+            if(!response.IsSuccess) return Unauthorized(response);
+            return Ok(response);
+        }
+
     }
 }

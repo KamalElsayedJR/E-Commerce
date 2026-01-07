@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using E_Commerce.Application.DTOs.Category;
 using E_Commerce.Application.DTOs.Response;
-using E_Commerce.Application.Interfaces;
-using E_Commerce.Domain.Interfaces;
+using E_Commerce.Application.Interfaces.Repositories;
+using E_Commerce.Application.Interfaces.Services;
 using E_Commerce.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -24,16 +24,15 @@ namespace E_Commerce.Application.implementation
         }
         public async Task<DataResponse<List<CategoryDto>>> GetAllCategoriesAsync()
         {
-            var cats = await _uoW.Repository<Category>().GetAllAsync();
+            var cats = (await _uoW.Repository<Category>().GetAllAsync()).Where(c=>c.IsActive);
             if (cats is null) return new DataResponse<List<CategoryDto>>(false, "No Categroy Found",
                                                                         null,
                                                                         new List<string>() {"No Categoty Found"});
-            var MappedCats = _mapper.Map<IReadOnlyList<Category>, List<CategoryDto>>(cats);
+            var MappedCats = _mapper.Map<IEnumerable<Category>, List<CategoryDto>>(cats);
             return new DataResponse<List<CategoryDto>>(true, "Categories Retrieved Successfully",
                                                         MappedCats,
                                                         null);
         }
-
         public async Task<BaseResponse> CreateCategoryAsync(CreateOrUpdateCategoryDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Name)) return new BaseResponse(false,"Invalid Form");
