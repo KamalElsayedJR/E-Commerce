@@ -15,15 +15,17 @@ namespace E_Commerce.Infrastructure.Repositories
         public IUserRepository UserRepository { get ; }
 
         public IRefreshTokenRepository RefreshTokenRepository { get; }
+        public IBasketRepository BasketRepository { get ; }
 
         private readonly ECommerceDbContext _dbContext;
         private readonly Hashtable _repo = new Hashtable();
 
-        public UnitOfWork(ECommerceDbContext dbContext, IUserRepository userRepo,IRefreshTokenRepository refreshTokenRepository)
+        public UnitOfWork(ECommerceDbContext dbContext, IUserRepository userRepo, IRefreshTokenRepository refreshTokenRepository, IBasketRepository basketRepository)
         {
             _dbContext = dbContext;
             UserRepository = userRepo;
             RefreshTokenRepository = refreshTokenRepository;
+            BasketRepository = basketRepository;
         }
         public async ValueTask DisposeAsync()
         => await _dbContext.DisposeAsync();

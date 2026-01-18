@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Domain.Models;
+using E_Commerce.Domain.Models.OrderAggregate;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,5 +25,10 @@ namespace E_Commerce.Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
-        }
+        public DbSet<Domain.Models.Address> Addresses { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+        
+    }
 }

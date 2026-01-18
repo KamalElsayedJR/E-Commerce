@@ -3,6 +3,7 @@ using E_Commerce.Application.DTOs.Auth;
 using E_Commerce.Application.DTOs.Response;
 using E_Commerce.Application.DTOs.User;
 using E_Commerce.Application.Interfaces.Services;
+using E_Commerce.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ namespace E_Commerce.API.Controllers
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return Unauthorized(new DataResponse<TokenReponse>
-                    (false, "No Refresh Token Provided", null, 
+                    (false, 401,"No Refresh Token Provided", null, 
                     new List<string>() { "No Refresh Token Provided" }));
             }
             var response = await _authServices.RefreshTokenAsync(refreshToken);
@@ -81,12 +82,20 @@ namespace E_Commerce.API.Controllers
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new DataResponse<UserDto>
-                    (false, "Invalid User", null, 
+                    (false, 401,"Invalid User", null, 
                     new List<string>() { "Invalid User" }));
             }
             var response = await _authServices.Me(userId);
             if(!response.IsSuccess) return Unauthorized(response);
             return Ok(response);
+        }
+        [Authorize]
+        [HttpPut("Address/{addressId}")]
+        public async Task<ActionResult<BaseResponse>> UpdateAddress(AddressDto dto,[FromRoute]string addressId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await _authServices.UpdateAddress(dto,addressId, userId);
+            return StatusCode(response.StatusCode, response);
         }
 
     }

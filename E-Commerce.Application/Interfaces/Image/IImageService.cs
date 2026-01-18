@@ -12,5 +12,8 @@ namespace E_Commerce.Application.Interfaces.Image
     {
         Task<List<string>> UploadImagesAsync(List<IFormFile> images);
         BaseResponse Validate(List<IFormFile> images);
+        Task<BaseResponse> DeleteImageAsync(string imageUrl);
+        string GetPublicIdFromUrl(string imageUrl);
+
     }
 }

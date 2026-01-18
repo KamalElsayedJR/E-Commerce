@@ -51,17 +51,37 @@ namespace E_Commerce.Infrastructure.Hellper
         public BaseResponse Validate(List<IFormFile> images)
         {
             if (images == null || !images.Any())
-                return new BaseResponse(false, "At least one image is required");
+                return new BaseResponse(false, 400,"At least one image is required");
             if (images.Count > MaxImages)
-                return new BaseResponse(false, $"Maximum {MaxImages} images allowed");
+                return new BaseResponse(false, 400, $"Maximum {MaxImages} images allowed");
             foreach (var image in images)
             {
                 if (!AllowedTypes.Contains(image.ContentType))
-                    return new BaseResponse(false, "Invalid image type");
+                    return new BaseResponse(false, 400, "Invalid image type");
                 if (image.Length > MaxSize)
-                    return new BaseResponse(false, "Image size must be less than 2MB");
+                    return new BaseResponse(false, 400, "Image size must be less than 2MB");
             }
-            return new BaseResponse(true, "Images are valid");
+            return new BaseResponse(true, 400, "Images are valid");
+        }
+
+        public async Task<BaseResponse> DeleteImageAsync(string imageUrl)
+        {
+            var publicId = GetPublicIdFromUrl(imageUrl);
+            var deletionParams = new DeletionParams(publicId)
+            {
+                ResourceType = ResourceType.Image
+            };
+            var result =await _cloudinary.DestroyAsync(deletionParams);
+            if (result.Result != "ok") return new BaseResponse(false, 400, "Failed to delete image");
+            return new BaseResponse(true, 200, "Image deleted successfully");
+        }
+
+        public string GetPublicIdFromUrl(string imageUrl)
+        {
+            var uri = new Uri(imageUrl);
+            var fileName = Path.GetFileNameWithoutExtension(uri.AbsolutePath);
+            var folder = "E-CommerceApp/products";
+            return $"{folder}/{fileName}";
         }
     }
 }

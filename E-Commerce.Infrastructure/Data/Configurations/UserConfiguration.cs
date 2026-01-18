@@ -40,6 +40,11 @@ namespace E_Commerce.Infrastructure.Data.Configurations
                     .HasConversion(rolesConverter)
                     .Metadata
                     .SetValueComparer(rolesComparer);
+            builder.HasMany(u=>u.Address)
+                    .WithOne(a=>a.User)
+                    .HasForeignKey(u=>u.UserId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -43,7 +43,6 @@ namespace E_Commerce.Application.implementation
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
         public async Task<string> GenerateRereshTokenAsync()
         {
             var randomNmber = new byte[32];

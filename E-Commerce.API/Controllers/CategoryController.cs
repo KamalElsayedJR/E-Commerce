@@ -1,5 +1,7 @@
 ﻿using E_Commerce.Application.DTOs.Category;
+using E_Commerce.Application.DTOs.Response;
 using E_Commerce.Application.Interfaces.Services;
+using E_Commerce.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,50 +17,41 @@ namespace E_Commerce.API.Controllers
         {
             _categoryServices = categoryServices;
         }
-        [Authorize(Roles = "Admin")]
-        [HttpPost("CreateCategory")]
-        public async Task<IActionResult> CreateCategory([FromBody] CreateOrUpdateCategoryDto dto)
+        [Authorize(Roles = nameof(UserRoles.Admin))]
+        [HttpPost]
+        public async Task<ActionResult<BaseResponse>> CreateCategory([FromBody] CreateOrUpdateCategoryDto dto)
         {
             var result = await _categoryServices.CreateCategoryAsync(dto);
-            if (!result.IsSuccess)
-                return BadRequest(result);
-            return Ok(result);
+            return StatusCode(result.StatusCode, result);
         }
-        [Authorize(Roles = "Admin")]
-        [HttpPut("UpdateCategory/{categoryId}")]
-        public async Task<IActionResult> UpdateCategory([FromBody] CreateOrUpdateCategoryDto dto, [FromRoute] string categoryId)
+        [Authorize(Roles = nameof(UserRoles.Admin))]
+        [HttpPut("{categoryId}")]
+        public async Task<ActionResult<BaseResponse>> UpdateCategory([FromBody] CreateOrUpdateCategoryDto dto, [FromRoute] string categoryId)
         {
             var result = await _categoryServices.UpdateCategoryAsync(dto, categoryId);
-            if (!result.IsSuccess)
-                return BadRequest(result);
-            return Ok(result);
+            return StatusCode(result.StatusCode, result);
         }
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("DeleteCategory/{categoryId}")]
-        public async Task<IActionResult> DeleteCategory([FromRoute] string categoryId)
+        [Authorize(Roles = nameof(UserRoles.Admin))]
+        [HttpDelete("{categoryId}")]
+        public async Task<ActionResult<BaseResponse>> DeleteCategory([FromRoute] string categoryId)
         {
             var result = await _categoryServices.DeleteCategroyAsync(categoryId);
-            if (!result.IsSuccess)
-                return BadRequest(result);
-            return Ok(result);
+            return StatusCode(result.StatusCode, result);
+
         }
         [Authorize]
-        [HttpGet("GetAllCategories")]
-        public async Task<IActionResult> GetAllCategories()
+        [HttpGet("Categories")]
+        public async Task<ActionResult<DataResponse<List<CategoryDto>>>> GetAllCategories()
         {
             var result = await _categoryServices.GetAllCategoriesAsync();
-            if (!result.IsSuccess)
-                return BadRequest(result);
-            return Ok(result);
+            return StatusCode(result.StatusCode, result);
         }
         [Authorize]
-        [HttpGet("GetCategory/{categoryId}")]
-        public async Task<IActionResult> GetCategory([FromRoute] string categoryId)
+        [HttpGet("{categoryId}")]
+        public async Task<ActionResult<BaseResponse>> GetCategory([FromRoute] string categoryId)
         {
             var result = await _categoryServices.GetCategoryAsync(categoryId);
-            if (!result.IsSuccess)
-                return BadRequest(result);
-            return Ok(result);
+            return StatusCode(result.StatusCode, result);
         }
     }
 }

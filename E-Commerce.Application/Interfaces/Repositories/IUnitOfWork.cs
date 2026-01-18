@@ -12,6 +12,7 @@ namespace E_Commerce.Application.Interfaces.Repositories
         IGenericRepository<T> Repository<T>() where T : BaseModel;
         public IUserRepository UserRepository { get;}
         public IRefreshTokenRepository RefreshTokenRepository { get;}
+        public IBasketRepository BasketRepository { get;  }
         Task<int> SaveChangesAsync();
     }
 }

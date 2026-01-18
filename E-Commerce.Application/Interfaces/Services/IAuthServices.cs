@@ -20,6 +20,7 @@ namespace E_Commerce.Application.Interfaces.Services
         Task<DataResponse<TokenReponse>> RefreshTokenAsync(string token);
         Task<BaseResponse> LogOutAsync(string token);
         Task<DataResponse<UserDto>> Me(string userId);
+        Task<BaseResponse> UpdateAddress(AddressDto dto, string addressId, string userId);
 
     }
 }

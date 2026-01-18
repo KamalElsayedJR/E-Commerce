@@ -18,9 +18,16 @@ namespace E_Commerce.Application.DTOs.Product
         [Required]
         public string Description { get; set; }
         [Required]
+        [DataType(DataType.Currency)]
+
         public decimal Price { get; set; }
         [Required]
-        public int Quantity { get; set; }=1;
+        private int stock;
+        public int Stock
+        {
+            get { return stock; }
+            set { stock = value<=0?1:value; }
+        }
         [Required]
         public string CategoryId { get; set; }
     }

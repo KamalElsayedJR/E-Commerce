@@ -13,8 +13,9 @@ namespace E_Commerce.Application.DTOs.Product
         public string? Name { get; set; }
         public List<IFormFile>? Images { get; set; }
         public string? Description { get; set; }
+        [DataType(DataType.Currency)]
         public decimal? Price { get; set; }
-        public int? Quantity { get; set; } = 1;
+        public int? Stock { get; set; } = 1;
         public string? CategoryId { get; set; }
     }
 }

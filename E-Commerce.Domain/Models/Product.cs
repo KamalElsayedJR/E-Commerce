@@ -13,7 +13,7 @@ namespace E_Commerce.Domain.Models
         public List<string> ImagesUrl { get; set; } = new();
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public int Quantity { get; set; }
+        public int Stock { get; set; }
         public ProductStatus Status { get; set; } = ProductStatus.Pending;
         public string CategoryId { get; set; }
         public Category Category { get; set; }

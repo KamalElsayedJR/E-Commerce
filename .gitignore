@@ -5,11 +5,10 @@
 
 #
 **/appsettings*.json
-
-**/appsettings*.json
+**/appsettings.json
 */appsettings.json
+/appsettings.json
 appsettings.json
-
 
 # dotenv files
 .env
